@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
+        <file>qml/PreparationView.qml</file>
+        <file>qml/ActionView.qml</file>
+        <file>qml/StatisticsView.qml</file>
+        <file>qml/PreparationSpinBox.qml</file>
     </qresource>
 </RCC>
