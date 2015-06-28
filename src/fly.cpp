@@ -3,30 +3,51 @@
 #include <QMutexLocker>
 #include <QThread>
 
-Fly::Fly(int stupidity, const QPoint& position, Board* board, QObject* parent)
+Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board, QObject* parent)
     : QObject(parent)
     , m_stupidity(stupidity)
     , m_position(position)
     , m_board(board)
     , m_thinkTimer(this)
+    , m_lifeTimer(this)
+    , m_dead(false)
 {
     (*m_board)[position.x()][position.y()]->increasePopulation();
     m_thinkTimer.setSingleShot(true);
+    m_lifeTimer.setSingleShot(true);
+    m_lifeTimer.setInterval(maxAgeSeconds * 1000);
 
     connect(&m_thinkTimer, &QTimer::timeout, this, &Fly::tryJump);
+    connect(&m_lifeTimer, &QTimer::timeout, this, &Fly::makeDead);
 }
 
 const QPoint& Fly::position() const {
     return m_position;
 }
 
+bool Fly::dead() const {
+    return m_dead;
+}
+
+void Fly::makeDead() {
+    m_dead = true;
+    emit deadChanged();
+    stop();
+}
+
 void Fly::start() {
+    think();
+    m_lifeTimer.start();
+}
+
+void Fly::think() {
     m_thinkTimer.setInterval((qrand() % (m_stupidity * 1000)) + 1);
     m_thinkTimer.start();
 }
 
 void Fly::stop() {
     m_thinkTimer.stop();
+    m_lifeTimer.stop();
     emit stopped();
 }
 
@@ -45,7 +66,7 @@ void Fly::tryJump() {
         availablePositions.append(m_position + QPoint(0, 1));
     }
     if (availablePositions.empty()) {
-        stop();
+        think();
         return;
     }
 
@@ -68,5 +89,5 @@ void Fly::tryJump() {
         emit positionChanged();
     }
 
-    start();
+    think();
 }

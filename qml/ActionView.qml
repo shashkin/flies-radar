@@ -58,7 +58,7 @@ Column {
             delegate: Rectangle {
                 width: 10
                 height: 10
-                color: "#000000"
+                color: isDead ? "#FF0000" : "#000000"
 
                 x: root.cellWidth * position.x + Math.floor(Math.random() * (root.cellWidth - 10))
                 y: root.cellHeight * position.y + Math.floor(Math.random() * (root.cellHeight - 10));

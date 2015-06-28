@@ -23,8 +23,11 @@ signals:
 
 private slots:
     void positionChanged();
+    void deadChanged();
 
 private:
+    void changed(Fly* fly, int role);
+
     QList<Fly*> m_flies;
 };
 
