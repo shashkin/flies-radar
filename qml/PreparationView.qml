@@ -41,6 +41,7 @@ Rectangle {
 
         PreparationSpinBox {
             id: numFliesBox
+            maximumValue: 9999
         }
 
         Text {

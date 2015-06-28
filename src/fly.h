@@ -10,19 +10,21 @@
 class Fly : public QObject
 {
     Q_OBJECT
-
-    Q_PROPERTY(int x READ x NOTIFY positionChanged)
-    Q_PROPERTY(int y READ y NOTIFY positionChanged)
 public:
     Fly(int stupidity, const QPoint& position, Board* board, QObject* parent = 0);
 
-    int x() const;
-    int y() const;
+    const QPoint& position() const;
 
 signals:
     void positionChanged();
+    void stopped();
 
 public slots:
+    void start();
+    void stop();
+
+private slots:
+    void tryJump();
 
 private:
     typedef QSharedPointer<Cell> CellPtr;

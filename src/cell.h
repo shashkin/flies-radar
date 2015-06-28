@@ -26,7 +26,7 @@ public:
 
     bool full() const;
 
-    const QMutex& populationMutex() const;
+    QMutex* populationMutex();
 
 signals:
     void capacityChanged();

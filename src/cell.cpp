@@ -1,7 +1,5 @@
 #include "cell.h"
 
-#include <QDebug>
-
 Cell::Cell(QObject *parent)
     : Cell(0, parent)
 {}
@@ -49,6 +47,6 @@ bool Cell::full() const {
     return m_population >= m_capacity;
 }
 
-const QMutex& Cell::populationMutex() const {
-    return m_populationMutex;
+QMutex* Cell::populationMutex() {
+    return &m_populationMutex;
 }

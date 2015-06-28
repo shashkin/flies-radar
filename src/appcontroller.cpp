@@ -3,8 +3,10 @@
 AppController::AppController(QObject *parent)
     : QObject(parent)
     , m_state(NONE)
+    , m_flyModel(this)
 {
-
+    connect(this, &AppController::activateFlies, &m_flyModel, &FlyModel::activateFlies);
+    connect(this, &AppController::deactivateFlies, &m_flyModel, &FlyModel::deactivateFlies);
 }
 
 void AppController::setState(State state) {
@@ -49,10 +51,6 @@ int AppController::boardHeight() const {
             : 0;
 }
 
-int AppController::numFlies() const {
-    return m_flies.size();
-}
-
 void AppController::createBoard(int width, int height, int capacity) {
     m_board.reset(new Board(width, height));
     for (int i = 0; i < width; ++i) {
@@ -67,23 +65,9 @@ void AppController::placeFlies(int numFlies, int stupidity) {
     if (!m_board)
         return;
 
-    QList<QPair<QPoint, CellPtr> > vacantCells;
-    for (int i = 0; i < m_board->width(); ++i) {
-        for (int j = 0; j < m_board->height(); ++j) {
-            vacantCells.append(qMakePair(QPoint(i, j), m_board->at(i, j)));
-        }
-    }
-
-    for (int i = 0; i < numFlies; ++i) {
-        int cellIndex = qrand() % vacantCells.size();
-        m_flies.append(new Fly(stupidity, vacantCells.at(cellIndex).first, m_board.data(), this));
-        if (vacantCells.at(cellIndex).second->full()) {
-            vacantCells.removeAt(cellIndex);
-        }
-    }
-    emit fliesChanged();
+    m_flyModel.placeFlies(numFlies, stupidity, m_board.data());
 }
 
-QObject* AppController::fly(int i) const {
-    return m_flies.at(i);
+QObject* AppController::flyModel() {
+    return &m_flyModel;
 }

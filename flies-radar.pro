@@ -5,7 +5,8 @@ QT += qml quick
 SOURCES += src/main.cpp \
     src/appcontroller.cpp \
     src/cell.cpp \
-    src/fly.cpp
+    src/fly.cpp \
+    src/flymodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +23,5 @@ HEADERS += \
     src/matrix.h \
     src/cell.h \
     src/fly.h \
-    src/board.h
+    src/board.h \
+    src/flymodel.h

@@ -5,7 +5,7 @@
 #include <QScopedPointer>
 
 #include "src/board.h"
-#include "src/fly.h"
+#include "src/flymodel.h"
 
 class AppController : public QObject
 {
@@ -14,7 +14,7 @@ class AppController : public QObject
     Q_PROPERTY(QString viewSource READ viewSource NOTIFY stateChanged)
     Q_PROPERTY(int boardWidth READ boardWidth NOTIFY boardChanged)
     Q_PROPERTY(int boardHeight READ boardHeight NOTIFY boardChanged)
-    Q_PROPERTY(int numFlies READ numFlies NOTIFY fliesChanged)
+    Q_PROPERTY(QObject* flyModel READ flyModel CONSTANT)
 
 public:
     explicit AppController(QObject *parent = 0);
@@ -24,12 +24,14 @@ public:
     int boardWidth() const;
     int boardHeight() const;
 
-    int numFlies() const;
+    QObject* flyModel();
 
 signals:
     void stateChanged();
     void boardChanged();
-    void fliesChanged();
+
+    void activateFlies();
+    void deactivateFlies();
 
 public slots:
     void showPreparation();
@@ -38,8 +40,6 @@ public slots:
 
     void createBoard(int width, int height, int capacity);
     void placeFlies(int numFlies, int stupidity);
-
-    QObject* fly(int i) const;
 
 private:
     enum State {
@@ -56,7 +56,7 @@ private:
     typedef QScopedPointer<Board> BoardPtr;
     BoardPtr m_board;
 
-    QList<QObject*> m_flies;
+    FlyModel m_flyModel;
 };
 
 #endif // APPCONTROLLER_H
