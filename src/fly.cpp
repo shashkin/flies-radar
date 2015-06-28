@@ -36,8 +36,8 @@ void Fly::makeDead() {
 }
 
 void Fly::start() {
-    think();
     m_lifeTimer.start();
+    think();
 }
 
 void Fly::think() {
