@@ -54,7 +54,11 @@ Rectangle {
         Button {
             text: qsTr("Start!")
             onClicked: {
+                if (numFliesBox.value > widthBox.value * heightBox.value * capacityBox.value)
+                    return;
+
                 appController.createBoard(widthBox.value, heightBox.value, capacityBox.value);
+                appController.placeFlies(numFliesBox.value, stupidityBox.value);
                 appController.showAction();
             }
         }

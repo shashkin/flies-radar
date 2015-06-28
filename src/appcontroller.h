@@ -3,10 +3,9 @@
 
 #include <QObject>
 #include <QScopedPointer>
-#include <QSharedPointer>
 
-#include "src/matrix.h"
-#include "src/cell.h"
+#include "src/board.h"
+#include "src/fly.h"
 
 class AppController : public QObject
 {
@@ -15,6 +14,7 @@ class AppController : public QObject
     Q_PROPERTY(QString viewSource READ viewSource NOTIFY stateChanged)
     Q_PROPERTY(int boardWidth READ boardWidth NOTIFY boardChanged)
     Q_PROPERTY(int boardHeight READ boardHeight NOTIFY boardChanged)
+    Q_PROPERTY(int numFlies READ numFlies NOTIFY fliesChanged)
 
 public:
     explicit AppController(QObject *parent = 0);
@@ -24,9 +24,12 @@ public:
     int boardWidth() const;
     int boardHeight() const;
 
+    int numFlies() const;
+
 signals:
     void stateChanged();
     void boardChanged();
+    void fliesChanged();
 
 public slots:
     void showPreparation();
@@ -34,6 +37,9 @@ public slots:
     void showStatistics();
 
     void createBoard(int width, int height, int capacity);
+    void placeFlies(int numFlies, int stupidity);
+
+    QObject* fly(int i) const;
 
 private:
     enum State {
@@ -47,10 +53,10 @@ private:
 
     State m_state;
 
-    typedef QSharedPointer<Cell> CellPtr;
-    typedef Matrix<CellPtr> Board;
     typedef QScopedPointer<Board> BoardPtr;
     BoardPtr m_board;
+
+    QList<QObject*> m_flies;
 };
 
 #endif // APPCONTROLLER_H

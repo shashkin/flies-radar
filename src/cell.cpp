@@ -45,6 +45,10 @@ void Cell::decreasePopulation() {
     emit populationChanged();
 }
 
+bool Cell::full() const {
+    return m_population >= m_capacity;
+}
+
 const QMutex& Cell::populationMutex() const {
     return m_populationMutex;
 }

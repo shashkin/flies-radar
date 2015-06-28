@@ -4,7 +4,8 @@ QT += qml quick
 
 SOURCES += src/main.cpp \
     src/appcontroller.cpp \
-    src/cell.cpp
+    src/cell.cpp \
+    src/fly.cpp
 
 RESOURCES += qml.qrc
 
@@ -19,4 +20,6 @@ include(deployment.pri)
 HEADERS += \
     src/appcontroller.h \
     src/matrix.h \
-    src/cell.h
+    src/cell.h \
+    src/fly.h \
+    src/board.h

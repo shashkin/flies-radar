@@ -24,6 +24,8 @@ public:
     void increasePopulation();
     void decreasePopulation();
 
+    bool full() const;
+
     const QMutex& populationMutex() const;
 
 signals:
