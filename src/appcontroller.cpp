@@ -36,3 +36,25 @@ QString AppController::viewSource() const {
         return QStringLiteral("");
     }
 }
+
+int AppController::boardWidth() const {
+    return m_board
+            ? m_board->width()
+            : 0;
+}
+
+int AppController::boardHeight() const {
+    return m_board
+            ? m_board->height()
+            : 0;
+}
+
+void AppController::createBoard(int width, int height, int capacity) {
+    m_board.reset(new Board(width, height));
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            (*m_board)[i][j].reset(new Cell(capacity));
+        }
+    }
+    emit boardChanged();
+}

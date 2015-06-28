@@ -27,6 +27,15 @@ Rectangle {
         }
 
         Text {
+            text: qsTr("Cell capacity:")
+        }
+
+        PreparationSpinBox {
+            id: capacityBox
+        }
+
+
+        Text {
             text: qsTr("Number of flies:")
         }
 
@@ -45,6 +54,7 @@ Rectangle {
         Button {
             text: qsTr("Start!")
             onClicked: {
+                appController.createBoard(widthBox.value, heightBox.value, capacityBox.value);
                 appController.showAction();
             }
         }

@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick
 
 SOURCES += src/main.cpp \
-    src/appcontroller.cpp
+    src/appcontroller.cpp \
+    src/cell.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,4 +17,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    src/appcontroller.h
+    src/appcontroller.h \
+    src/matrix.h \
+    src/cell.h
