@@ -5,6 +5,8 @@ Column {
     id: root
     property int cellWidth: 75
     property int cellHeight: 75
+    property int flyWidth: 20
+    property int flyHeight: 20
 
     spacing: 2
 
@@ -55,13 +57,13 @@ Column {
 
             model: appController.flyModel
 
-            delegate: Rectangle {
-                width: 10
-                height: 10
-                color: isDead ? "#FF0000" : "#000000"
+            delegate: Image {
+                width: root.flyWidth
+                height: root.flyHeight
+                source: isDead ? "qrc:/img/dead_fly.png" : "qrc:/img/fly.png"
 
-                x: root.cellWidth * position.x + Math.floor(Math.random() * (root.cellWidth - 10))
-                y: root.cellHeight * position.y + Math.floor(Math.random() * (root.cellHeight - 10));
+                x: root.cellWidth * position.x + Math.floor(Math.random() * (root.cellWidth - root.flyWidth))
+                y: root.cellHeight * position.y + Math.floor(Math.random() * (root.cellHeight - root.flyHeight));
             }
         }
     }

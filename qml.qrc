@@ -1,9 +1,11 @@
 <RCC>
     <qresource prefix="/">
+        <file>img/fly.png</file>
         <file>qml/main.qml</file>
         <file>qml/PreparationView.qml</file>
         <file>qml/ActionView.qml</file>
         <file>qml/StatisticsView.qml</file>
         <file>qml/PreparationSpinBox.qml</file>
+        <file>img/dead_fly.png</file>
     </qresource>
 </RCC>
