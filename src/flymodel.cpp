@@ -32,8 +32,6 @@ QVariant FlyModel::data(const QModelIndex& index, int role) const {
     default:
         return QVariant(QVariant::Invalid);
     }
-
-    return m_flies.at(index.row())->position();
 }
 
 QHash<int, QByteArray> FlyModel::roleNames() const
@@ -46,41 +44,37 @@ QHash<int, QByteArray> FlyModel::roleNames() const
     return roles;
 }
 
-void FlyModel::placeFlies(int numFlies, int stupidity, Board* board) {
-    beginResetModel();
+bool FlyModel::placeFly(int x, int y, int stupidity, Board *board) {
+    int maxAge = stupidity * (board->width() + board->height()) / 2;
 
-    QList<QPair<QPoint, CellPtr> > vacantCells;
-    for (int i = 0; i < board->width(); ++i) {
-        for (int j = 0; j < board->height(); ++j) {
-            vacantCells.append(qMakePair(QPoint(i, j), board->at(i, j)));
-        }
+    Fly* fly;
+    try {
+        fly = new Fly(stupidity, maxAge, QPoint(x, y), board);
+    } catch (FlyCreationException& e) {
+        return false;
     }
 
-    for (int i = 0; i < numFlies; ++i) {
-        int cellIndex = qrand() % vacantCells.size();
-        int personalStupidity = (qrand() % stupidity) + 1;
-        int maxAge = personalStupidity * (board->width() + board->height()) / 2;
+    QThread* thread = new QThread;
+    fly->moveToThread(thread);
 
-        QThread* thread = new QThread;
-        Fly* fly = new Fly(personalStupidity, maxAge, vacantCells.at(cellIndex).first, board);
-        fly->moveToThread(thread);
+    connect(thread, &QThread::started, fly, &Fly::start);
+    connect(fly, &Fly::stopped, thread, &QThread::quit);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
 
-        connect(fly, &Fly::positionChanged, this, &FlyModel::positionChanged);
-        connect(fly, &Fly::deadChanged, this, &FlyModel::deadChanged);
-        connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-        connect(this, &FlyModel::activateFlies, fly, &Fly::start);
-        connect(this, &FlyModel::deactivateFlies, fly, &Fly::stop);
-        connect(fly, &Fly::stopped, thread, &QThread::quit);
-        connect(qApp, &QCoreApplication::aboutToQuit, fly, &Fly::deleteLater);
-        thread->start();
+    connect(fly, &Fly::positionChanged, this, &FlyModel::positionChanged);
+    connect(fly, &Fly::deadChanged, this, &FlyModel::deadChanged);
 
-        m_flies.append(fly);
-        if (vacantCells.at(cellIndex).second->full()) {
-            vacantCells.removeAt(cellIndex);
-        }
-    }
+    connect(this, &FlyModel::deactivateFlies, fly, &Fly::stop);
 
-    endResetModel();
+    connect(qApp, &QCoreApplication::aboutToQuit, fly, &Fly::deleteLater);
+
+    int index = m_flies.size();
+    beginInsertRows(QModelIndex(), index, index);
+    m_flies.append(fly);
+    endInsertRows();
+
+    thread->start();
+    return true;
 }
 
 void FlyModel::positionChanged() {

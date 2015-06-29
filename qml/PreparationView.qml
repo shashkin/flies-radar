@@ -34,32 +34,10 @@ Rectangle {
             id: capacityBox
         }
 
-
-        Text {
-            text: qsTr("Number of flies:")
-        }
-
-        PreparationSpinBox {
-            id: numFliesBox
-            maximumValue: 9999
-        }
-
-        Text {
-            text: qsTr("Max stupidity:")
-        }
-
-        PreparationSpinBox {
-            id: stupidityBox
-        }
-
         Button {
             text: qsTr("Start!")
             onClicked: {
-                if (numFliesBox.value > widthBox.value * heightBox.value * capacityBox.value)
-                    return;
-
                 appController.createBoard(widthBox.value, heightBox.value, capacityBox.value);
-                appController.placeFlies(numFliesBox.value, stupidityBox.value);
                 appController.showAction();
             }
         }

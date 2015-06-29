@@ -1,7 +1,6 @@
 #include "fly.h"
 
 #include <QMutexLocker>
-#include <QThread>
 
 Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board, QObject* parent)
     : QObject(parent)
@@ -12,7 +11,16 @@ Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board,
     , m_lifeTimer(this)
     , m_dead(false)
 {
-    (*m_board)[position.x()][position.y()]->increasePopulation();
+    CellPtr cell = (*m_board)[position.x()][position.y()];
+    {
+        QMutexLocker lock(cell->populationMutex());
+        if (cell->full()) {
+            throw FlyCreationException();
+        } else {
+            cell->increasePopulation();
+        }
+    }
+
     m_thinkTimer.setSingleShot(true);
     m_lifeTimer.setSingleShot(true);
     m_lifeTimer.setInterval(maxAgeSeconds * 1000);

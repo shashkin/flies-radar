@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QTimer>
+#include <QException>
 
 #include "src/board.h"
 
@@ -36,15 +37,19 @@ private slots:
 private:
     void think();
 
-    typedef QSharedPointer<Cell> CellPtr;
-    typedef Matrix<CellPtr> Board;
-
     int m_stupidity;
     QPoint m_position;
     Board* m_board;
     QTimer m_thinkTimer;
     QTimer m_lifeTimer;
     bool m_dead;
+};
+
+class FlyCreationException : public QException
+{
+public:
+    void raise() const { throw *this; }
+    FlyCreationException *clone() const { return new FlyCreationException(*this); }
 };
 
 #endif // FLY_H

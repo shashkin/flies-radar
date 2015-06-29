@@ -15,10 +15,9 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     QHash<int, QByteArray> roleNames() const;
 
-    void placeFlies(int numFlies, int stupidity, Board* board);
+    bool placeFly(int x, int y, int stupidity, Board* board);
 
 signals:
-    void activateFlies();
     void deactivateFlies();
 
 private slots:

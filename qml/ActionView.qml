@@ -12,19 +12,36 @@ Column {
 
     Row {
         spacing: 5
+        enabled: board.selected !== -1
 
         Button {
-            text: qsTr("Start")
+            text: qsTr("Place fly")
             onClicked: {
-                appController.activateFlies();
+                if (board.selected === -1)
+                    return;
+
+                errorText.visible = !appController.placeFly(
+                    board.selected % appController.boardWidth,
+                    Math.floor(board.selected / appController.boardWidth),
+                    stupidityBox.value);
             }
         }
 
-        Button {
-            text: qsTr("Stop")
-            onClicked: {
-                appController.deactivateFlies();
-            }
+        Text {
+            text: qsTr("with stupidity:")
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        PreparationSpinBox {
+            id: stupidityBox
+        }
+
+        Text {
+            id: errorText
+            text: qsTr("can not place a fly into cell!")
+            visible: false
+            color: "#AA0000"
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 
@@ -35,6 +52,7 @@ Column {
         Grid {
             id: board
 
+            property int selected: -1
 
             columns: appController.boardWidth
 
@@ -47,6 +65,18 @@ Column {
                     border {
                         width: 1
                         color: "#555555"
+                    }
+                    color: board.selected === index ? "#FFFF00" : "#FFFFFF"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if (board.selected == index) {
+                                board.selected = -1;
+                            } else {
+                                board.selected = index;
+                            }
+                        }
                     }
                 }
             }
@@ -65,6 +95,13 @@ Column {
                 x: root.cellWidth * position.x + Math.floor(Math.random() * (root.cellWidth - root.flyWidth))
                 y: root.cellHeight * position.y + Math.floor(Math.random() * (root.cellHeight - root.flyHeight));
             }
+        }
+    }
+
+    Button {
+        text: qsTr("Stop")
+        onClicked: {
+            appController.deactivateFlies();
         }
     }
 }

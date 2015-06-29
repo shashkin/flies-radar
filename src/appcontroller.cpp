@@ -5,7 +5,6 @@ AppController::AppController(QObject *parent)
     , m_state(NONE)
     , m_flyModel(this)
 {
-    connect(this, &AppController::activateFlies, &m_flyModel, &FlyModel::activateFlies);
     connect(this, &AppController::deactivateFlies, &m_flyModel, &FlyModel::deactivateFlies);
 }
 
@@ -61,11 +60,11 @@ void AppController::createBoard(int width, int height, int capacity) {
     emit boardChanged();
 }
 
-void AppController::placeFlies(int numFlies, int stupidity) {
+bool AppController::placeFly(int x, int y, int stupidity) {
     if (!m_board)
-        return;
+        return false;
 
-    m_flyModel.placeFlies(numFlies, stupidity, m_board.data());
+    return m_flyModel.placeFly(x, y, stupidity, m_board.data());
 }
 
 QObject* AppController::flyModel() {

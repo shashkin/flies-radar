@@ -30,7 +30,6 @@ signals:
     void stateChanged();
     void boardChanged();
 
-    void activateFlies();
     void deactivateFlies();
 
 public slots:
@@ -39,7 +38,7 @@ public slots:
     void showStatistics();
 
     void createBoard(int width, int height, int capacity);
-    void placeFlies(int numFlies, int stupidity);
+    bool placeFly(int x, int y, int stupidity);
 
 private:
     enum State {
