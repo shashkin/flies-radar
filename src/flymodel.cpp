@@ -1,6 +1,7 @@
 #include "flymodel.h"
 
 #include <Qt>
+#include <QtGlobal>
 #include <QCoreApplication>
 #include <QThread>
 
@@ -12,6 +13,7 @@ enum ModelDataRole {
     AvgSpeedRole,
     DistanceRole,
     AgeMsRole,
+    StupidityRole,
 };
 
 }
@@ -38,6 +40,8 @@ QVariant FlyModel::data(const QModelIndex& index, int role) const {
         return fly->distance();
     case AgeMsRole:
         return fly->ageMs();
+    case StupidityRole:
+        return qMin(float(fly->stupidity()) / 50, 1.0f);
     default:
         return QVariant(QVariant::Invalid);
     }
@@ -52,6 +56,7 @@ QHash<int, QByteArray> FlyModel::roleNames() const
         roles[AvgSpeedRole] = "avgSpeed";
         roles[DistanceRole] = "distance";
         roles[AgeMsRole] = "ageMs";
+        roles[StupidityRole] = "stupidity";
     }
     return roles;
 }

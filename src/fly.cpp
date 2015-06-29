@@ -66,6 +66,10 @@ int Fly::distance() const {
     return m_distance;
 }
 
+int Fly::stupidity() const {
+    return m_stupidity;
+}
+
 void Fly::makeDead() {
     m_dead = true;
     emit deadChanged();

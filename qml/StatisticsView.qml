@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.3
 
 TableView {
-    width: 600
+    width: 605
 
     model: appController.flyModel
 

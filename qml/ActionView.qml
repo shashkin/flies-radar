@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.3
+import QtGraphicalEffects 1.0
 
 Column {
     id: root
@@ -90,6 +91,8 @@ Column {
             model: appController.flyModel
 
             delegate: Image {
+                id: fly
+
                 width: root.flyWidth
                 height: root.flyHeight
                 source: isDead ? "qrc:/img/dead_fly.png" : "qrc:/img/fly.png"
@@ -102,6 +105,12 @@ Column {
                 }
                 Behavior on y {
                     NumberAnimation { duration: 200 }
+                }
+
+                ColorOverlay {
+                    anchors.fill: fly
+                    source: fly
+                    color: Qt.rgba(1, 0, 0, stupidity)
                 }
             }
         }

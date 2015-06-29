@@ -23,6 +23,8 @@ public:
     int ageMs() const;
     float avgSpeed() const;
     int distance() const;
+    int stupidity() const;
+
     int index() const;
     void setIndex(int i);
 
