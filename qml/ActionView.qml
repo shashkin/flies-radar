@@ -94,6 +94,13 @@ Column {
 
                 x: root.cellWidth * position.x + Math.floor(Math.random() * (root.cellWidth - root.flyWidth))
                 y: root.cellHeight * position.y + Math.floor(Math.random() * (root.cellHeight - root.flyHeight));
+
+                Behavior on x {
+                    NumberAnimation { duration: 200 }
+                }
+                Behavior on y {
+                    NumberAnimation { duration: 200 }
+                }
             }
         }
     }
