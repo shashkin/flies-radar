@@ -10,6 +10,9 @@ Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board,
     , m_thinkTimer(this)
     , m_lifeTimer(this)
     , m_dead(false)
+    , m_age(0)
+    , m_distance(0)
+    , m_index(-1)
 {
     CellPtr cell = (*m_board)[position.x()][position.y()];
     {
@@ -27,6 +30,17 @@ Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board,
 
     connect(&m_thinkTimer, &QTimer::timeout, this, &Fly::tryJump);
     connect(&m_lifeTimer, &QTimer::timeout, this, &Fly::makeDead);
+
+    connect(this, &Fly::distanceChanged, this, &Fly::avgSpeedChanged);
+    connect(this, &Fly::ageChanged, this, &Fly::avgSpeedChanged);
+}
+
+int Fly::index() const {
+    return m_index;
+}
+
+void Fly::setIndex(int i) {
+    m_index = i;
 }
 
 const QPoint& Fly::position() const {
@@ -37,9 +51,26 @@ bool Fly::dead() const {
     return m_dead;
 }
 
+int Fly::ageMs() const {
+    return m_age;
+}
+
+float Fly::avgSpeed() const {
+    if (ageMs() == 0) {
+        return 0.0;
+    }
+    return float(distance()) / ageMs() * 1000;
+}
+
+int Fly::distance() const {
+    return m_distance;
+}
+
 void Fly::makeDead() {
     m_dead = true;
     emit deadChanged();
+    m_age = m_lifeTimer.interval();
+    emit ageChanged();
     stop();
 }
 
@@ -55,7 +86,11 @@ void Fly::think() {
 
 void Fly::stop() {
     m_thinkTimer.stop();
-    m_lifeTimer.stop();
+    if (m_lifeTimer.isActive()) {
+        m_age = m_lifeTimer.interval() - m_lifeTimer.remainingTime();
+        m_lifeTimer.stop();
+        emit ageChanged();
+    }
     emit stopped();
 }
 
@@ -95,6 +130,8 @@ void Fly::tryJump() {
         m_board->at(oldPosition)->decreasePopulation();
         m_position = newPosition;
         emit positionChanged();
+        ++m_distance;
+        emit distanceChanged();
     }
 
     think();

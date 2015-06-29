@@ -20,10 +20,14 @@ Column {
                 if (board.selected === -1)
                     return;
 
-                errorText.visible = !appController.placeFly(
+                if(appController.placeFly(
                     board.selected % appController.boardWidth,
                     Math.floor(board.selected / appController.boardWidth),
-                    stupidityBox.value);
+                    stupidityBox.value)) {
+                    errorText.color = "#FFFFFF";
+                } else {
+                    errorText.color = "#AA0000";
+                }
             }
         }
 
@@ -35,14 +39,12 @@ Column {
         PreparationSpinBox {
             id: stupidityBox
         }
+    }
 
-        Text {
-            id: errorText
-            text: qsTr("can not place a fly into cell!")
-            visible: false
-            color: "#AA0000"
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    Text {
+        id: errorText
+        text: qsTr("can not place a fly into cell!")
+        color: "#FFFFFF"
     }
 
     Item {
@@ -109,6 +111,7 @@ Column {
         text: qsTr("Stop")
         onClicked: {
             appController.deactivateFlies();
+            appController.showStatistics();
         }
     }
 }

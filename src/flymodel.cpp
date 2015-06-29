@@ -9,6 +9,9 @@ namespace {
 enum ModelDataRole {
     PositionRole = Qt::UserRole + 1,
     IsDeadRole,
+    AvgSpeedRole,
+    DistanceRole,
+    AgeMsRole,
 };
 
 }
@@ -29,6 +32,12 @@ QVariant FlyModel::data(const QModelIndex& index, int role) const {
         return fly->position();
     case IsDeadRole:
         return fly->dead();
+    case AvgSpeedRole:
+        return fly->avgSpeed();
+    case DistanceRole:
+        return fly->distance();
+    case AgeMsRole:
+        return fly->ageMs();
     default:
         return QVariant(QVariant::Invalid);
     }
@@ -40,6 +49,9 @@ QHash<int, QByteArray> FlyModel::roleNames() const
     if (roles.empty()) {
         roles[PositionRole] = "position";
         roles[IsDeadRole] = "isDead";
+        roles[AvgSpeedRole] = "avgSpeed";
+        roles[DistanceRole] = "distance";
+        roles[AgeMsRole] = "ageMs";
     }
     return roles;
 }
@@ -63,6 +75,9 @@ bool FlyModel::placeFly(int x, int y, int stupidity, Board *board) {
 
     connect(fly, &Fly::positionChanged, this, &FlyModel::positionChanged);
     connect(fly, &Fly::deadChanged, this, &FlyModel::deadChanged);
+    connect(fly, &Fly::avgSpeedChanged, this, &FlyModel::avgSpeedChanged);
+    connect(fly, &Fly::distanceChanged, this, &FlyModel::distanceChanged);
+    connect(fly, &Fly::ageChanged, this, &FlyModel::ageChanged);
 
     connect(this, &FlyModel::deactivateFlies, fly, &Fly::stop);
 
@@ -71,6 +86,7 @@ bool FlyModel::placeFly(int x, int y, int stupidity, Board *board) {
     int index = m_flies.size();
     beginInsertRows(QModelIndex(), index, index);
     m_flies.append(fly);
+    fly->setIndex(index);
     endInsertRows();
 
     thread->start();
@@ -85,15 +101,23 @@ void FlyModel::deadChanged() {
     changed(qobject_cast<Fly*>(sender()), IsDeadRole);
 }
 
+void FlyModel::distanceChanged() {
+    changed(qobject_cast<Fly*>(sender()), DistanceRole);
+}
+
+void FlyModel::ageChanged() {
+    changed(qobject_cast<Fly*>(sender()), AgeMsRole);
+}
+
+void FlyModel::avgSpeedChanged() {
+    changed(qobject_cast<Fly*>(sender()), AvgSpeedRole);
+}
+
 void FlyModel::changed(Fly* fly, int role) {
-    if (!fly)
+    if (!fly || fly->index() == -1)
         return;
 
-    int row = m_flies.indexOf(fly);
-    if (row == -1)
-        return;
-
-    QModelIndex modelIndex = createIndex(row, 1);
+    QModelIndex modelIndex = createIndex(fly->index(), 1);
 
     emit dataChanged(modelIndex, modelIndex, QVector<int>(1, role));
 }

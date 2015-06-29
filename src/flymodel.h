@@ -23,6 +23,9 @@ signals:
 private slots:
     void positionChanged();
     void deadChanged();
+    void distanceChanged();
+    void ageChanged();
+    void avgSpeedChanged();
 
 private:
     void changed(Fly* fly, int role);

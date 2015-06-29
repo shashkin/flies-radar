@@ -20,10 +20,18 @@ public:
 
     const QPoint& position() const;
     bool dead() const;
+    int ageMs() const;
+    float avgSpeed() const;
+    int distance() const;
+    int index() const;
+    void setIndex(int i);
 
 signals:
     void positionChanged();
     void deadChanged();
+    void distanceChanged();
+    void ageChanged();
+    void avgSpeedChanged();
     void stopped();
 
 public slots:
@@ -43,6 +51,9 @@ private:
     QTimer m_thinkTimer;
     QTimer m_lifeTimer;
     bool m_dead;
+    int m_age;
+    int m_distance;
+    int m_index;
 };
 
 class FlyCreationException : public QException
