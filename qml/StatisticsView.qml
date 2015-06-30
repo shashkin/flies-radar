@@ -2,7 +2,10 @@ import QtQuick 2.0
 import QtQuick.Controls 1.3
 
 TableView {
-    width: 605
+    id: root
+
+    width: 620
+    height: 600
 
     model: appController.flyModel
 
@@ -33,7 +36,7 @@ TableView {
         width: 120
         horizontalAlignment: Text.AlignHCenter
         delegate: Text {
-            text: (styleData.value / 1000).toFixed(2)
+            text: parseFloat(styleData.value / 1000).toFixed(2)
             horizontalAlignment: Text.AlignHCenter
         }
     }
@@ -42,7 +45,10 @@ TableView {
         role: "distance"
         title: qsTr("Distance")
         width: 120
-        horizontalAlignment: Text.AlignHCenter
+        delegate: Text {
+            text: styleData.value
+            horizontalAlignment: Text.AlignHCenter
+        }
     }
 
     TableViewColumn {
@@ -50,7 +56,7 @@ TableView {
         title: qsTr("Avg Speed")
         width: 120
         delegate: Text {
-            text: styleData.value.toFixed(2)
+            text: parseFloat(styleData.value).toFixed(2)
             horizontalAlignment: Text.AlignHCenter
         }
     }

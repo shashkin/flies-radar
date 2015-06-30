@@ -4,6 +4,7 @@ import QtQuick.Controls 1.3
 Rectangle {
     width: 200
     height: 300
+    anchors.centerIn: parent
 
     Grid {
         columns: 2

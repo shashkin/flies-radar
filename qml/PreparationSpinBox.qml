@@ -3,5 +3,5 @@ import QtQuick.Controls 1.3
 
 SpinBox {
     minimumValue: 1
-    width: 50
+    width: 70
 }
