@@ -1,6 +1,7 @@
 #include "fly.h"
 
 #include <QMutexLocker>
+#include <QTime>
 
 Fly::Fly(int stupidity, int maxAgeSeconds, const QPoint& position, Board* board, QObject* parent)
     : QObject(parent)
@@ -57,9 +58,9 @@ int Fly::ageMs() const {
 
 float Fly::avgSpeed() const {
     if (ageMs() == 0) {
-        return 0.0;
+        return 0.0f;
     }
-    return float(distance()) / ageMs() * 1000;
+    return float(distance()) / ageMs() * 1000.0f;
 }
 
 int Fly::distance() const {
@@ -79,6 +80,7 @@ void Fly::makeDead() {
 }
 
 void Fly::start() {
+    qsrand(QTime::currentTime().msec());
     m_lifeTimer.start();
     think();
 }
